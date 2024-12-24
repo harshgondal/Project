@@ -60,31 +60,36 @@ def update_emp_salary():
         emp_id = request.form['emp_id']
         new_salary = request.form['new_salary']
         
+        # Update employee salary
         sql = "UPDATE employee SET salary = :new_salary WHERE e_id = :emp_id"
         val = {"emp_id": emp_id, "new_salary": new_salary}
         cur.execute(sql, val)
         con.commit()
 
+        # Retrieve updated employee data
         cur.execute("SELECT * FROM employee WHERE e_id = :emp_id", {"emp_id": emp_id})
         res = cur.fetchone()
+
+        # Initialize formatted_message with a default value
+        formatted_message = ""
 
         if res is None:
             flash("Employee Not found")
         else:
             # Mapping fields to descriptive labels
             formatted_message = (
-        f"Employee ID: {res[0]}<br>"
-    f"Name: {res[1]}<br>"
-    f"Phone Number: {res[2]}<br>"
-    f"Gender: {res[3]}<br>"
-    f"Address: {res[4]}<br>"
-    f"Date of Joining: {res[5].strftime('%Y-%m-%d')}<br>"
-    f"Salary: {res[6]}<br>"
-    f"Scheme ID: {res[7]}"
-)
+                f"Employee ID: {res[0]}<br>"
+                f"Name: {res[1]}<br>"
+                f"Phone Number: {res[2]}<br>"
+                f"Gender: {res[3]}<br>"
+                f"Address: {res[4]}<br>"
+                f"Date of Joining: {res[5].strftime('%Y-%m-%d')}<br>"
+                f"Salary: {res[6]}<br>"
+                f"Scheme ID: {res[7]}"
+            )
 
-# Mark the message as HTML-safe
-    flash(Markup(f"Employee Salary Updated:<br>{formatted_message}"), "success")
+        # Mark the message as HTML-safe
+        flash(Markup(f"Employee Salary Updated:<br>{formatted_message}"), "success")
 
     return render_template('update_emp_salary.html')
 
